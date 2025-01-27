@@ -32,7 +32,7 @@ const AppBar = () => {
         {/* Trello  */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {/* Trello Icon */}
-          <SvgIcon component={TrelloIcon} inheritViewBox sx={{ color: 'primary.main' }}/>
+          <SvgIcon component={TrelloIcon} inheritViewBox sx={{ color: 'primary.main', fontSize: 'large' }}/>
           {/* Trello Text */}
           <Typography sx={{ color: 'primary.main', fontSize: '1.25rem', fontWeight: 'bold' }}>Trello</Typography>
         </Box>
@@ -58,13 +58,13 @@ const AppBar = () => {
         <Tooltip title="Notification">
           <Box sx={{ color: 'action.active' }}>
             <Badge color="secondary" variant="dot">
-              <NotificationsNoneIcon sx={{ cursor: 'pointer' }} />
+              <NotificationsNoneIcon sx={{ cursor: 'pointer', color: 'primary.main' }} />
             </Badge>
           </Box>
         </Tooltip>
         {/* Help Icon */}
         <Tooltip title="Help">
-          <HelpOutlineIcon sx={{ cursor: 'pointer' }} />
+          <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'primary.main' }} />
         </Tooltip>
         {/* Avatar */}
         <Profiles />
