@@ -24,10 +24,28 @@ const theme = extendTheme({
     }
   },
   components: {
+    //custom scroll
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '*::-webkit-scrollbar': {
+            height: '8px'
+          },
+          '*::-webkit-scrollbar-thumb': {
+            background: '#bdc3c7',
+            borderRadius: '8px'
+          },
+          '*::-webkit-scrollbar-thumb:hover': {
+            background: '#55efc4'
+          }
+        }
+      }
+    },
+    //custom button
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none'
+          textTransform: 'none' //fix the uppercase letters
         }
       }
     },
