@@ -12,12 +12,12 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import Tooltip from '@mui/material/Tooltip'
 const sx ={
   borderRadius: '4px',
-  backgroundColor: 'white',
+  backgroundColor: 'transparent',
   border: 'none',
   paddingX: '5px',
-  color: 'primary.main',
+  color: 'white',
   '& .MuiSvgIcon-root': {
-    color: 'primary.main'
+    color: 'white'
   },
   '&:hover': {
     backgroundColor: 'primary.50'
@@ -26,12 +26,13 @@ const sx ={
 const BoardBar = () => {
   return (
     <Box sx={{
+      backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
       display: 'flex',
       alignItems: 'center',
       height: (theme) => theme.trello.boardBarHeight,
       width: '100%',
       px: 2,
-      borderTop: '1px solid #00bfa5',
+      borderBottom: '1px solid white',
       overflowX: 'auto',
       gap: 2,
       justifyContent:'space-between'
@@ -78,15 +79,29 @@ const BoardBar = () => {
       {/* Right nav */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         {/* Button invite */}
-        <Button variant="outlined" startIcon={<PersonAddIcon />}>Invite</Button>
+        <Button
+          variant="outlined"
+          startIcon={<PersonAddIcon />}
+          sx={{
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': {
+              borderColor: 'white'
+            }
+          }}
+        >
+          Invite
+        </Button>
         {/* People in team */}
         <AvatarGroup
           max={4}
           sx={{
+            gap: '10px',
             '& .MuiAvatar-root': {
               width: 34,
               height: 34,
-              fontSize: 16
+              fontSize: 16,
+              border: 'none'
             }
           }}
         >
