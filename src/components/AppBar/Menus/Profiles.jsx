@@ -30,7 +30,7 @@ function Profiles() {
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}>
           <Avatar src='https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/473328308_1327000315122575_4157714033055204981_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=HxCFqDU88XMQ7kNvgFXLPK8&_nc_zt=23&_nc_ht=scontent.fdad3-5.fna&_nc_gid=ArIM2rf1ogcyxBT_aYeMvwZ&oh=00_AYCqDOHSDajTMhrlK-Nuzc5FCGRN2dVIM5XVmXuI5SOB9A&oe=679E7B1B'
-            sx={{ width: 34, height: 34 }} />
+            sx={{ width: 36, height: 36 }} />
         </IconButton>
       </Tooltip>
       <Menu
