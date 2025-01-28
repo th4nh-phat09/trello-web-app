@@ -29,8 +29,8 @@ function Profiles() {
           aria-controls={open ? 'basic-menu-profiles' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}>
-          <Avatar src='https://instagram.fsgn2-5.fna.fbcdn.net/v/t51.2885-19/474954533_3532826557021528_2782930819644570984_n.jpg?_nc_ht=instagram.fsgn2-5.fna.fbcdn.net&_nc_cat=104&_nc_oc=Q6cZ2AG2tz7X5RteUeYl-BdKjnm67q1WSnu0b-hKjy-GydmyAZHbjLIAmsTfpQprL5XHHIU&_nc_ohc=tnxVqWZiL1UQ7kNvgHFiuRD&_nc_gid=57d744b3706c465da6e2ab766f560336&edm=ALGbJPMBAAAA&ccb=7-5&oh=00_AYDGM1Etdm759m-6b3-Q0xVT-z1INqh4vXLdZdzRs_RDMg&oe=679AC982&_nc_sid=7d3ac5'
-            sx={{ width: 32, height: 32 }} />
+          <Avatar src='https://scontent.fdad3-5.fna.fbcdn.net/v/t39.30808-6/473328308_1327000315122575_4157714033055204981_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=HxCFqDU88XMQ7kNvgFXLPK8&_nc_zt=23&_nc_ht=scontent.fdad3-5.fna&_nc_gid=ArIM2rf1ogcyxBT_aYeMvwZ&oh=00_AYCqDOHSDajTMhrlK-Nuzc5FCGRN2dVIM5XVmXuI5SOB9A&oe=679E7B1B'
+            sx={{ width: 34, height: 34 }} />
         </IconButton>
       </Tooltip>
       <Menu
