@@ -31,6 +31,7 @@ const AppBar = () => {
       justifyContent: 'space-between',
       gap: 2,
       overflowX: 'auto',
+      '&::-webkit-scrollbar-track': { m :2 },
       px: 2,
       backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2c3e50' : '#1565c0')
     }}>
@@ -109,7 +110,7 @@ const AppBar = () => {
         {/* Notifications Icon */}
         <Tooltip title="Notification">
           <Box sx={{ color: 'action.active' }}>
-            <Badge color="secondary" variant="dot">
+            <Badge color="warning" variant="dot">
               <NotificationsNoneIcon sx={{ cursor: 'pointer', color: 'white' }} />
             </Badge>
           </Box>
