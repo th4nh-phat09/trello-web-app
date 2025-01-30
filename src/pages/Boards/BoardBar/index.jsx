@@ -35,7 +35,8 @@ const BoardBar = () => {
       borderBottom: '1px solid white',
       overflowX: 'auto',
       gap: 2,
-      justifyContent:'space-between'
+      justifyContent:'space-between',
+      '&::-webkit-scrollbar-track': { m :2 }
     }}>
       {/* Left nav */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -101,7 +102,10 @@ const BoardBar = () => {
               width: 34,
               height: 34,
               fontSize: 16,
-              border: 'none'
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              '&:first-of-type': { bgcolor: '#a40be' }
             }
           }}
         >
