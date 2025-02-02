@@ -79,6 +79,14 @@ const theme = extendTheme({
         }
       }
     },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          '&:last-child' : {
+            paddingBottom: '12px'}
+        }
+      }
+    },
     MuiOutlinedInput: {
       styleOverrides: {
         root: (/*{ theme }*/) => {
