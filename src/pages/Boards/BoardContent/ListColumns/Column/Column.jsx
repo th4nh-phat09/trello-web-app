@@ -23,16 +23,21 @@ import { CSS } from '@dnd-kit/utilities'
 
 
 const Column = ({ column }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+
+  //drag
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
   })
 
   const dndKitColumnStyles = {
     transform: CSS.Translate.toString(transform),
-    transition
+    transition,
+    height: '100%',
+    opacity: isDragging ? 0.5 : undefined
   }
 
+  //dropdowm menu
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -45,112 +50,111 @@ const Column = ({ column }) => {
   const orderCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
 
   return (
-    <Box
-      ref={setNodeRef}
-      style={dndKitColumnStyles}
-      {...attributes}
-      {...listeners}
-      sx={{
-        minWidth: '300px',
-        maxWidth: '300px',
-        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0'),
-        ml: 2,
-        borderRadius: '6px',
-        height: 'fit-content',
-        maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
-      }}>
+    <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
+      <Box
+        {...listeners}
+        sx={{
+          minWidth: '300px',
+          maxWidth: '300px',
+          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0'),
+          ml: 2,
+          borderRadius: '6px',
+          height: 'fit-content',
+          maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
+        }}>
 
-      {/* box column header */}
-      <Box sx={{
-        height: (theme) => theme.trello.headerColumnHeight,
-        cursor: 'pointer',
-        p: 2,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        {/* column title */}
-        <Typography variant='h6'
-          sx={{
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            fontSize: '1rem'
-          }}>
-          {column?.title}
-        </Typography>
+        {/* box column header */}
+        <Box sx={{
+          height: (theme) => theme.trello.headerColumnHeight,
+          cursor: 'pointer',
+          p: 2,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          {/* column title */}
+          <Typography variant='h6'
+            sx={{
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              fontSize: '1rem'
+            }}>
+            {column?.title}
+          </Typography>
 
-        {/*   expand more */}
-        <Box>
-          {/*icon expand more  */}
-          <Tooltip title="More Options">
-            <ExpandMoreIcon
-              id="basic-button-dropdown"
-              aria-controls={open ? 'basic-menu-dropdown' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}
-              sx={{ cursor: 'pointer', color: 'text.primary' }}
-            />
+          {/*   expand more */}
+          <Box>
+            {/*icon expand more  */}
+            <Tooltip title="More Options">
+              <ExpandMoreIcon
+                id="basic-button-dropdown"
+                aria-controls={open ? 'basic-menu-dropdown' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+                sx={{ cursor: 'pointer', color: 'text.primary' }}
+              />
+            </Tooltip>
+            <Menu
+              id="basic-menu-dropdown"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button-dropdown'
+              }}
+            >
+              <MenuItem>
+                <ListItemIcon><AddCardIcon fontSize="small" /></ListItemIcon>
+                <ListItemText>Add new card</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
+                <ListItemText>Cut</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
+                <ListItemText>Copy</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon><ContentPaste fontSize="small" /></ListItemIcon>
+                <ListItemText>Paste</ListItemText>
+              </MenuItem>
+              <Divider />
+              <MenuItem>
+                <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
+                <ListItemText>Archive this column</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon><DeleteForeverIcon fontSize="small" /></ListItemIcon>
+                <ListItemText>Remove this column</ListItemText>
+              </MenuItem>
+            </Menu>
+          </Box>
+        </Box>
+
+        {/*Box column list card  */}
+        <ListCards cards={orderCards} />
+
+        {/* Box column footer */}
+        <Box sx={{
+          height: (theme) => theme.trello.footerColumnHeight,
+          cursor: 'pointer',
+          p: 2,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          {/* button add new card */}
+          <Button startIcon={<AddCardIcon />}>Add new card</Button>
+
+          {/* Icon drag to move */}
+          <Tooltip title='Drag to move'>
+            <DragHandleIcon sx={{ cursor: 'pointer' }}/>
           </Tooltip>
-          <Menu
-            id="basic-menu-dropdown"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button-dropdown'
-            }}
-          >
-            <MenuItem>
-              <ListItemIcon><AddCardIcon fontSize="small" /></ListItemIcon>
-              <ListItemText>Add new card</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
-              <ListItemText>Cut</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
-              <ListItemText>Copy</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon><ContentPaste fontSize="small" /></ListItemIcon>
-              <ListItemText>Paste</ListItemText>
-            </MenuItem>
-            <Divider />
-            <MenuItem>
-              <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
-              <ListItemText>Archive this column</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon><DeleteForeverIcon fontSize="small" /></ListItemIcon>
-              <ListItemText>Remove this column</ListItemText>
-            </MenuItem>
-          </Menu>
         </Box>
       </Box>
-
-      {/*Box column list card  */}
-      <ListCards cards={orderCards} />
-
-      {/* Box column footer */}
-      <Box sx={{
-        height: (theme) => theme.trello.footerColumnHeight,
-        cursor: 'pointer',
-        p: 2,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        {/* button add new card */}
-        <Button startIcon={<AddCardIcon />}>Add new card</Button>
-
-        {/* Icon drag to move */}
-        <Tooltip title='Drag to move'>
-          <DragHandleIcon sx={{ cursor: 'pointer' }}/>
-        </Tooltip>
-      </Box>
-    </Box>
+    </div>
   )
 }
 
