@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Card from './ListColumns/Column/ListCards/Card/Card'
 import Column from './ListColumns/Column/Column'
+import { cloneDeep } from 'lodash'
 import {
   DndContext,
   DragOverlay,
@@ -38,6 +39,12 @@ const BoardContent = ({ board }) => {
 
   const sensors = useSensors(mouseSensor, touchSensor)
 
+  //func find Column By card Id
+  const findColumnByCardId = (cardId) => {
+    return orderColumns.find(column => column?.cards?.map(card => card._id)?.includes(cardId))
+    // return orderColumns.find(column => column?.cardOrderIds?.includes(cardId))
+  }
+
   const handleDragStart = (event) => {
     //console.log('start', event)
     setActiveDragItemId(event?.active?.id)
@@ -45,15 +52,69 @@ const BoardContent = ({ board }) => {
     setActiveDragItemData(event?.active?.data?.current)
   }
 
+  const handleDragOver = (event) => {
+    //check drag column is active => do nothing
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) return
+    //card active and over active from event
+    const { active, over } = event
+    if (!active || !over) return
+    // id of active and over
+    const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
+    const { id: overCardId } = over
+    // Find column by cardId
+    const activeColumn = findColumnByCardId(activeDraggingCardId)
+    const overColumn = findColumnByCardId(overCardId)
+    // Check over and active column is undified
+    if (!activeColumn || !overColumn) return
+    if (activeColumn !== overColumn) {
+      setOrderColumns(prevColumn => {
+        //clone columns for avoid conflict data
+        const nextColumns = cloneDeep(prevColumn)
+        //find overCardIndex
+        const overCardIndex = overColumn?.cards?.findIndex(card => card.id === overCardId)
+        // find newCardIndex index
+        let newCardIndex
+        const isBelowOverItem = active.rect.current.translated &&
+                active.rect.current.translated.top > over.rect.top + over.rect.height
+        const modifier = isBelowOverItem ? 1 : 0
+        newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length + 1
+        //find next next active,over Column
+        const nextActiveColumn = nextColumns?.find(column => column._id === activeColumn._id)
+        const nextOverColumn = nextColumns?.find(column => column._id === overColumn._id)
+        // remove card in old column
+        if (nextActiveColumn) {
+          //remove card in old column
+          nextActiveColumn.cards = nextActiveColumn?.cards?.filter(card => card._id !== activeDraggingCardId )
+          //update cardOrderIds
+          nextActiveColumn.cardOrderIds = nextActiveColumn?.cards?.map(card => card._id)
+        }
+
+        // update card in over column
+        if (nextOverColumn) {
+          //remove card in new column if it is ton tai roi
+          nextOverColumn.cards = nextOverColumn?.cards?.filter(card => card._id !== activeDraggingCardId )
+          //add card to new column
+          nextOverColumn.cards = nextOverColumn?.cards?.toSpliced(newCardIndex, 0, activeDraggingCardData)
+          //update cardOrderIds
+          nextOverColumn.cardOrderIds = nextOverColumn?.cards?.map(card => card._id)
+        }
+        return nextColumns
+      }
+      )
+    }
+  }
   const handleDragEnd = (event) => {
+    //check drag card is active => do nothing
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) return
     setActiveDragItemId(null)
     setActiveDragItemType(null)
     setActiveDragItemData(null)
     //console.log('eee', event)
     // event end kéo thả, check thong tin của active và over
+    //card active and over active from event
     const { active, over } = event
     // Lấy in4 của element đc kéo (active) và element bị kéo tới (over)
-    if (!over) return
+    if (!active || !over) return
     // Nếu 0 có element over,return => fix bug over bi keo ra bie
     if (active.id !== over.id) {
       // check nếu element dc kéo != với element bị kéo tới
@@ -76,7 +137,7 @@ const BoardContent = ({ board }) => {
   // useEffect để lấy dữ liệu columns từ board và set vào state orderColumns
   useEffect(() => { setOrderColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id' ))}, [board])
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors} onDragStart={handleDragStart}>
+    <DndContext onDragEnd={handleDragEnd} sensors={sensors} onDragStart={handleDragStart} onDragOver={handleDragOver}>
       <Box sx={{
         height: (theme) => theme.trello.boardContentHeight,
         width: '100%',
