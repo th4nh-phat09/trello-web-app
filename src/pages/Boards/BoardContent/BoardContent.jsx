@@ -13,7 +13,8 @@ import {
   MouseSensor,
   TouchSensor,
   useSensor,
-  useSensors
+  useSensors,
+  closestCorners
 } from '@dnd-kit/core'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -137,7 +138,12 @@ const BoardContent = ({ board }) => {
   // useEffect để lấy dữ liệu columns từ board và set vào state orderColumns
   useEffect(() => { setOrderColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id' ))}, [board])
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors} onDragStart={handleDragStart} onDragOver={handleDragOver}>
+    <DndContext
+      onDragEnd={handleDragEnd}
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      collisionDetection={closestCorners}>
       <Box sx={{
         height: (theme) => theme.trello.boardContentHeight,
         width: '100%',
