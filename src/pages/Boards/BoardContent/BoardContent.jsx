@@ -15,9 +15,9 @@ import {
   useSensor,
   useSensors,
   closestCorners,
-  closestCenter,
+  // closestCenter,
   pointerWithin,
-  rectIntersection,
+  // rectIntersection,
   getFirstCollision
 } from '@dnd-kit/core'
 
@@ -64,15 +64,17 @@ const BoardContent = ({ board }) => {
       return closestCorners({ ...args })
     // First, let's see if there are any collisions with the pointer
     const pointerIntersections = pointerWithin(args)
+    //fix flickering drag card between columns
+    if (!pointerIntersections?.length) return
     // console.log(args)
-    const intersections = pointerIntersections.length > 0 ? pointerIntersections: rectIntersection(args)
-    let overId = getFirstCollision(intersections, 'id')
+    // const intersections = !!pointerIntersections?.length ? pointerIntersections: rectIntersection(args)
+    let overId = getFirstCollision(pointerIntersections, 'id')
     if (overId) {
       lastOverId.current = overId
       // fix overId if overId = id of column to id of card = alg closestCenter
       const checkColumn = orderColumns.find(column => column._id === overId )
       if (checkColumn) {
-        overId = closestCenter({
+        overId = closestCorners({
           ...args,
           droppableContainers: args.droppableContainers.filter((container) =>
             container.id !== overId && checkColumn?.cardOrderIds?.includes(container.id)
