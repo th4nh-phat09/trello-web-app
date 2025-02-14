@@ -6,7 +6,7 @@ export const mockData = {
     type: 'public', // 'private'
     ownerIds: [], // List users are Admin of board
     memberIds: [], // List users are member of board
-    columnOrderIds: ['column-id-03', 'column-id-02', 'column-id-01'], // sort Columns in 1 boards
+    columnOrderIds: ['column-id-03', 'column-id-02', 'column-id-01', 'column-id-04'], // sort Columns in 1 boards
     columns: [
       {
         _id: 'column-id-01',
@@ -53,6 +53,20 @@ export const mockData = {
           { _id: 'card-id-11', boardId: 'board-id-01', columnId: 'column-id-03', title: 'Title of card 11', description: null, cover: null, memberIds: [], comments: [], attachments: [] },
           { _id: 'card-id-12', boardId: 'board-id-01', columnId: 'column-id-03', title: 'Title of card 12', description: null, cover: null, memberIds: [], comments: [], attachments: [] },
           { _id: 'card-id-13', boardId: 'board-id-01', columnId: 'column-id-03', title: 'Title of card 13', description: null, cover: null, memberIds: [], comments: [], attachments: [] }
+        ]
+      },
+      //CREATE A UNIQUE ID FOR CARD WHEN COLUMN EMPTY _id = `$columnId+'-placeholder-card'`
+      {
+        _id: 'column-id-04',
+        boardId: 'board-id-01',
+        title: 'Empty Column 04',
+        cardOrderIds: ['column-id-04-placeholder-card'],
+        cards: [
+          { _id: 'column-id-04-placeholder-card',
+            boardId: 'board-id-01',
+            columnId: 'column-id-04',
+            FE_Placeholder: true
+          }
         ]
       }
     ]
