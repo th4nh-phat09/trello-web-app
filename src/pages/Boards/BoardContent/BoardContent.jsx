@@ -5,7 +5,8 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Card from './ListColumns/Column/ListCards/Card/Card'
 import Column from './ListColumns/Column/Column'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
+import { generatePlaceholderCard } from '~/utils/formatters'
 import {
   DndContext,
   DragOverlay,
@@ -113,6 +114,10 @@ const BoardContent = ({ board }) => {
       if (nextActiveColumn) {
         //remove card in old column
         nextActiveColumn.cards = nextActiveColumn?.cards?.filter(card => card._id !== activeDraggingCardId )
+        //check columns empty => add card placeholder
+        if (isEmpty(nextActiveColumn?.cards)) {
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
+        }
         //update cardOrderIds
         nextActiveColumn.cardOrderIds = nextActiveColumn?.cards?.map(card => card._id)
       }
@@ -126,6 +131,8 @@ const BoardContent = ({ board }) => {
         }
         //add card to new column
         nextOverColumn.cards = nextOverColumn?.cards?.toSpliced(newCardIndex, 0, rebuildActiveDraggingCardData)
+        //delete placeholder card if column have
+        nextOverColumn.cards = nextOverColumn?.cards?.filter(card => !card.FE_Placeholder)
         //update cardOrderIds
         nextOverColumn.cardOrderIds = nextOverColumn?.cards?.map(card => card._id)
       }
