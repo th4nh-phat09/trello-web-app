@@ -180,6 +180,7 @@ const Column = ({ column }) => {
                 label="Enter card title..."
                 type="text"
                 size="small"
+                data-no-dnd
                 autoFocus
                 variant='outlined'
                 value={newCardTitle}
