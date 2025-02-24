@@ -42,12 +42,14 @@ const BoardBar = ({ board }) => {
       {/* Left nav */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         {/* Chip ThanhPhatDev Stack Board */}
-        <Chip
-          sx={sx}
-          icon={<SpaceDashboardIcon />}
-          label={board?.title}
-          clickable
-        />
+        <Tooltip title={board?.description}>
+          <Chip
+            sx={sx}
+            icon={<SpaceDashboardIcon />}
+            label={board?.title}
+            clickable
+          />
+        </Tooltip>
         {/* Chip Public/Private Workspace*/}
         <Chip
           sx={sx}
