@@ -11,8 +11,8 @@ import {
   DndContext,
   DragOverlay,
   defaultDropAnimationSideEffects,
-  MouseSensor,
-  TouchSensor,
+  // MouseSensor,
+  // TouchSensor,
   useSensor,
   useSensors,
   closestCorners,
@@ -21,6 +21,7 @@ import {
   // rectIntersection,
   getFirstCollision
 } from '@dnd-kit/core'
+import { TouchSensor, MouseSensor } from '~/customLib/dndKitSensors'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN : 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
