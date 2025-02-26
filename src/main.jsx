@@ -14,5 +14,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
     <ToastContainer theme="colored" position="bottom-left"/>
   </CssVarsProvider>
-  //{/* </React.StrictMode> */}
+  // {/* </React.StrictMode> */}
 )
