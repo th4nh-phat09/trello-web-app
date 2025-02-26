@@ -25,7 +25,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
 
 
-const Column = ({ column }) => {
+const Column = ({ column, createNewCard }) => {
 
   //drag
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -61,6 +61,7 @@ const Column = ({ column }) => {
       toast.error('Please enter Card title', { theme: 'colored', position: 'bottom-right' })
       return
     }
+    createNewCard({ title: `${newCardTitle}`, columnId: `${column._id}` })
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }
