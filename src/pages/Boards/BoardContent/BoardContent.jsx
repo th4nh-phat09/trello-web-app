@@ -27,7 +27,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN : 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
-const BoardContent = ({ board, createNewColumn, createNewCard }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) => {
   // default is pointerSensor ,if use default you should use touch action none
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -229,8 +229,11 @@ const BoardContent = ({ board, createNewColumn, createNewCard }) => {
         // Tìm vị trí ban đầu (index) của column dang dc kéo in array
         const newColumnIndex = orderColumns.findIndex(column => column._id === over.id)
         // Tìm vị trí mới (index) của column bị kéo tới in array
-        setOrderColumns(arrayMove(orderColumns, oldColumnIndex, newColumnIndex))
+        const dndOrderColumns = arrayMove(orderColumns, oldColumnIndex, newColumnIndex)
         // Update lại state orderColumns = use hàm arrayMove
+        moveColumns(dndOrderColumns)
+        //gọi api để update columns trong database và truyền ngược lên cho component cha ở _id.jsx
+        setOrderColumns(dndOrderColumns)
         // arrayMove là hàm sắp xếp lại array vị trí mới
       }}
     setActiveDragItemId(null)

@@ -4,7 +4,7 @@ import BoardContent from './BoardContent/BoardContent'
 import Container from '@mui/material/Container'
 // import { mockData } from '~/apis/mock-data'
 import { useEffect, useState } from 'react'
-import { fetchBoardDetailsAPI, createNewCardAPI, createNewColumnAPI } from '~/apis'
+import { fetchBoardDetailsAPI, createNewCardAPI, createNewColumnAPI, updateBoardDetailsAPI } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 
@@ -54,6 +54,17 @@ const Board = () => {
     //console.log(createdNewCard)
   }
 
+  const moveColumns = async ( dndOrderColumns ) => {
+    const dndOrderColumnIds = dndOrderColumns.map(column => column._id)
+
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderColumns
+    newBoard.columnOrderIds =dndOrderColumnIds
+    setBoard(newBoard)
+
+    await updateBoardDetailsAPI(newBoard._id, { columnOrderIds : dndOrderColumnIds })
+  }
+
   return (
     <Container disableGutters maxWidth={false} sx={{ height :'100vh' }}>
       <AppBar />
@@ -62,6 +73,7 @@ const Board = () => {
         board={board}
         createNewColumn={createNewColumn}
         createNewCard={createNewCard}
+        moveColumns={moveColumns}
       />
     </Container>
   )
