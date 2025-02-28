@@ -36,7 +36,7 @@ const ListColumns = ({ columns, createNewColumn, createNewCard }) => {
         '&::-webkit-scrollbar-track': { m :2 }
       }}>
         {/* column */}
-        {columns.map(column => <Column key={column._id} column={column} createNewCard={createNewCard} /> )}
+        {columns?.map(column => <Column key={column?._id} column={column} createNewCard={createNewCard} /> )}
 
         {!openNewColumnForm ?
           <Box onClick={ toggleOpenNewColumnForm } sx={{

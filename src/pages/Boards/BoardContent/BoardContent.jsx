@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
-import { mapOrder } from '~/utils/sort'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Card from './ListColumns/Column/ListCards/Card/Card'
@@ -27,7 +26,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN : 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
-const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, moveCardsInTheSameColumn }) => {
   // default is pointerSensor ,if use default you should use touch action none
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -54,7 +53,7 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
   //trang thai truoc cua overid de lo nhu null thi lay gia tri truoc
   const lastOverId = useRef(null)
   // useEffect để lấy dữ liệu columns từ board và set vào state orderColumns
-  useEffect(() => { setOrderColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id' ))}, [board])
+  useEffect(() => { setOrderColumns(board?.columns)}, [board])
 
   //func find Column By card Id
   const findColumnByCardId = (cardId) => {
@@ -210,16 +209,18 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
         // Tìm vị trí ban đầu (index) của card dang dc kéo in column
         const newCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
         // Tìm vị trí mới (index) của card bị kéo tới in column
+        const dndOrderedCards = arrayMove(overColumn?.cards, oldCardIndex, newCardIndex)
+        // arrayMove là hàm sắp xếp lại array vị trí mới
+        const dndOrderCardIds = dndOrderedCards?.map(card => card._id)
         setOrderColumns(prevColumn => {
           //clone columns for avoid conflict data
           const nextColumns = cloneDeep(prevColumn)
-          const dndOrderedCards = arrayMove(overColumn?.cards, oldCardIndex, newCardIndex)
-          // arrayMove là hàm sắp xếp lại array vị trí mới
           const targetColumn = nextColumns?.find(column => column?._id === overColumn._id)
           targetColumn.cards = dndOrderedCards
-          targetColumn.cardOrderIds = dndOrderedCards?.map(card => card._id)
+          targetColumn.cardOrderIds = dndOrderCardIds
           return nextColumns
         })
+        moveCardsInTheSameColumn(dndOrderedCards, dndOrderCardIds, overColumn._id)
       }
     }
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
@@ -231,10 +232,10 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
         // Tìm vị trí mới (index) của column bị kéo tới in array
         const dndOrderColumns = arrayMove(orderColumns, oldColumnIndex, newColumnIndex)
         // Update lại state orderColumns = use hàm arrayMove
-        moveColumns(dndOrderColumns)
-        //gọi api để update columns trong database và truyền ngược lên cho component cha ở _id.jsx
         setOrderColumns(dndOrderColumns)
         // arrayMove là hàm sắp xếp lại array vị trí mới
+        moveColumns(dndOrderColumns)
+        //gọi api để update columns trong database và truyền ngược lên cho component cha ở _id.jsx
       }}
     setActiveDragItemId(null)
     setActiveDragItemType(null)
