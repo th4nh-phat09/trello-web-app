@@ -18,7 +18,6 @@ import DragHandleIcon from '@mui/icons-material/DragHandle'
 import { useState } from 'react'
 import Box from '@mui/material/Box'
 import ListCards from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sort'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import CloseIcon from '@mui/icons-material/Close'
@@ -50,7 +49,7 @@ const Column = ({ column, createNewCard }) => {
     setAnchorEl(null)
   }
 
-  const orderCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const orderCards = column?.cards
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
