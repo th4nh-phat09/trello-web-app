@@ -5,7 +5,14 @@ import Container from '@mui/material/Container'
 // import { mockData } from '~/apis/mock-data'
 import { mapOrder } from '~/utils/sort'
 import { useEffect, useState } from 'react'
-import { fetchBoardDetailsAPI, createNewCardAPI, createNewColumnAPI, updateBoardDetailsAPI, updateCardInTheSameColumnAPI } from '~/apis'
+import {
+  fetchBoardDetailsAPI,
+  createNewCardAPI,
+  createNewColumnAPI,
+  updateBoardDetailsAPI,
+  updateCardInTheSameColumnAPI,
+  updateCardInDiffColumnAPI
+} from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -83,6 +90,20 @@ const Board = () => {
     await updateCardInTheSameColumnAPI(columnId, { cardOrderIds : dndOrderCardIds })
   }
 
+  const moveCardsToDiffColumn = ( currentCardId, prevColumnId, nextColumnId, dndOrderColumns ) => {
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderColumns
+    setBoard(newBoard)
+    updateCardInDiffColumnAPI({
+      currentCardId,
+      prevColumnId,
+      nextColumnId,
+      prevCardOrderIds: dndOrderColumns.find(column => column._id === prevColumnId).cardOrderIds,
+      nextCardOrderIds: dndOrderColumns.find(column => column._id === nextColumnId).cardOrderIds
+    }
+    )
+  }
+
   if (!board) {
     return (
       <Box
@@ -110,6 +131,7 @@ const Board = () => {
         createNewCard={createNewCard}
         moveColumns={moveColumns}
         moveCardsInTheSameColumn={moveCardsInTheSameColumn}
+        moveCardsToDiffColumn={moveCardsToDiffColumn}
       />
     </Container>
   )
