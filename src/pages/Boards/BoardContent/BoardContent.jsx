@@ -26,7 +26,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN : 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
-const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, moveCardsInTheSameColumn }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, moveCardsInTheSameColumn, moveCardsToDiffColumn }) => {
   // default is pointerSensor ,if use default you should use touch action none
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -94,7 +94,8 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, move
     overColumn,
     over,
     active,
-    overCardId
+    overCardId,
+    triggerFrom
   ) => {
     setOrderColumns(prevColumn => {
       //find overCardIndex
@@ -136,6 +137,14 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, move
         //update cardOrderIds
         nextOverColumn.cardOrderIds = nextOverColumn?.cards?.map(card => card._id)
       }
+      if (triggerFrom === 'handleDragEnd') {
+        moveCardsToDiffColumn(
+          activeDraggingCardId,
+          oldColumnDraggingCard._id,
+          nextActiveColumn._id,
+          nextColumns
+        )
+      }
       return nextColumns
     }
     )
@@ -171,7 +180,9 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, move
         overColumn,
         over,
         active,
-        overCardId)
+        overCardId,
+        'handleDragOver'
+      )
     }
   }
   const handleDragEnd = (event) => {
@@ -202,7 +213,9 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, move
           overColumn,
           over,
           active,
-          overCardId)
+          overCardId,
+          'handleDragEnd'
+        )
       } else {
         // check nếu card dc kéo != với card bị kéo tới
         const oldCardIndex = oldColumnDraggingCard?.cards?.findIndex(card => card._id === activeDragItemId)
