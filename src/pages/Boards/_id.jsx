@@ -11,13 +11,15 @@ import {
   createNewColumnAPI,
   updateBoardDetailsAPI,
   updateCardInTheSameColumnAPI,
-  updateCardInDiffColumnAPI
+  updateCardInDiffColumnAPI,
+  deleteColumnDetailsAPI
 } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import { toast } from 'react-toastify'
 
 const Board = () => {
   const [board, setBoard] = useState(null)
@@ -89,6 +91,17 @@ const Board = () => {
     await updateBoardDetailsAPI(newBoard._id, { columnOrderIds : dndOrderColumnIds })
   }
 
+  const deleteDetailColumn = ( columnId ) => {
+    const orderColumn = board.columns.filter(column => column._id !== columnId)
+    const newBoard = { ...board }
+    newBoard.columns = orderColumn
+    newBoard.columnOrderIds = orderColumn.map(column => column._id)
+    setBoard(newBoard)
+    deleteColumnDetailsAPI(columnId).then(res => {
+      toast.success(res?.deletedResult)
+    })
+  }
+
   const moveCardsInTheSameColumn = async ( dndOrderCards, dndOrderCardIds, columnId ) => {
     const newBoard = { ...board }
     const columnToUpdate = newBoard.columns.find(column => column._id === columnId)
@@ -146,6 +159,7 @@ const Board = () => {
         moveColumns={moveColumns}
         moveCardsInTheSameColumn={moveCardsInTheSameColumn}
         moveCardsToDiffColumn={moveCardsToDiffColumn}
+        deleteDetailColumn={deleteDetailColumn}
       />
     </Container>
   )
