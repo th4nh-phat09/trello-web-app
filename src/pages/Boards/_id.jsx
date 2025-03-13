@@ -3,10 +3,8 @@ import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 import Container from '@mui/material/Container'
 // import { mockData } from '~/apis/mock-data'
-import { mapOrder } from '~/utils/sort'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import {
-  fetchBoardDetailsAPI,
   createNewCardAPI,
   createNewColumnAPI,
   updateBoardDetailsAPI,
@@ -15,31 +13,23 @@ import {
   deleteColumnDetailsAPI
 } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
-import { isEmpty } from 'lodash'
+import { cloneDeep } from 'lodash'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectCurrentActiveBoard, updateCurrentActiveBoard, fetchBoardDetailsAPI } from '~/redux/activeBoard/activeBoardSlice'
 
 const Board = () => {
-  const [board, setBoard] = useState(null)
+  //const [board, setBoard] = useState(null)
+  const board = useSelector(selectCurrentActiveBoard)
+  const dispatch = useDispatch()
+
   useEffect(() => {
     const boardId = '67b9dd65ef4a5f8e62700935'
-    fetchBoardDetailsAPI(boardId).then(board => {
-      board.columns = mapOrder(board?.columns, board?.columnOrderIds, '_id' )
-      board.columns.forEach(column => {
-        if (isEmpty(column.cards)) {
-          column.cards = [generatePlaceholderCard(column)]
-          column.cardOrderIds = [generatePlaceholderCard(column)._id]
-        }
-        else {
-          column.cards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
-        }
-      })
-      setBoard(board)
-
-    })
-  }, [])
+    dispatch(fetchBoardDetailsAPI(boardId))
+  }, [dispatch])
 
   const createNewColumn = async( newColumnData ) => {
     const createdNewColumn = await createNewColumnAPI({
@@ -50,11 +40,14 @@ const Board = () => {
     createdNewColumn.cards = [generatePlaceholderCard(createdNewColumn)]
     createdNewColumn.cardOrderIds = [generatePlaceholderCard(createdNewColumn)._id]
 
-    const newBoard = { ...board }
+    //fix immuation of redux
+    //const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     newBoard.columns.push(createdNewColumn)
     newBoard.columnOrderIds.push(createdNewColumn._id)
-    setBoard(newBoard)
+    // setBoard(newBoard)
     //console.log(createdNewColumn)
+    dispatch(updateCurrentActiveBoard(newBoard))
   }
 
   const createNewCard = async( newCardData ) => {
@@ -63,8 +56,9 @@ const Board = () => {
       boardId: board._id
     })
 
-    const newBoard = { ...board }
-
+    //fix immutation in redux
+    //const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(column => column._id === createdNewCard.columnId)
     if (columnToUpdate) {
       // Nếu column rỗng: bản chất là đang chứa một cái Placeholder card
@@ -77,8 +71,10 @@ const Board = () => {
         columnToUpdate.cardOrderIds.push(createdNewCard._id)
       }
     }
-    setBoard(newBoard)
+    // setBoard(newBoard)
     //console.log(createdNewCard)
+    dispatch(updateCurrentActiveBoard(newBoard))
+
   }
 
   const moveColumns = async ( dndOrderColumns ) => {
@@ -86,7 +82,8 @@ const Board = () => {
     const newBoard = { ...board }
     newBoard.columns = dndOrderColumns
     newBoard.columnOrderIds = dndOrderColumnIds
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     await updateBoardDetailsAPI(newBoard._id, { columnOrderIds : dndOrderColumnIds })
   }
@@ -96,27 +93,32 @@ const Board = () => {
     const newBoard = { ...board }
     newBoard.columns = orderColumn
     newBoard.columnOrderIds = orderColumn.map(column => column._id)
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
     deleteColumnDetailsAPI(columnId).then(res => {
       toast.success(res?.deletedResult)
     })
   }
 
   const moveCardsInTheSameColumn = async ( dndOrderCards, dndOrderCardIds, columnId ) => {
-    const newBoard = { ...board }
+    //fix immutation in redux
+    //const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(column => column._id === columnId)
     if (columnToUpdate) {
       columnToUpdate.cardOrderIds = dndOrderCardIds
       columnToUpdate.cards = dndOrderCards
     }
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
     await updateCardInTheSameColumnAPI(columnId, { cardOrderIds : dndOrderCardIds })
   }
 
   const moveCardsToDiffColumn = ( currentCardId, prevColumnId, nextColumnId, dndOrderedColumns ) => {
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumns
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
     let prevCardOrderIds = dndOrderedColumns.find(column => column._id === prevColumnId)?.cardOrderIds
     //console.log('🚀 ~ moveCardsToDiffColumn ~ prevCardOrderIds:', prevCardOrderIds)
     if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
