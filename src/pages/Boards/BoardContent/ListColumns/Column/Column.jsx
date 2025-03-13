@@ -23,9 +23,16 @@ import { CSS } from '@dnd-kit/utilities'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
 import { useConfirm } from 'material-ui-confirm'
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { cloneDeep } from 'lodash'
+import { createNewCardAPI, deleteColumnDetailsAPI } from '~/apis'
 
-const Column = ({ column, createNewCard, deleteDetailColumn }) => {
 
+const Column = ({ column }) => {
+
+  const dispatch =useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
   //drag
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
@@ -55,12 +62,36 @@ const Column = ({ column, createNewCard, deleteDetailColumn }) => {
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
 
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = () => {
+  const addNewCard = async() => {
     if (!newCardTitle) {
       toast.error('Please enter Card title', { theme: 'colored', position: 'bottom-right' })
       return
     }
-    createNewCard({ title: `${newCardTitle}`, columnId: `${column._id}` })
+    //convert to redux
+    //createNewCard({ title: `${newCardTitle}`, columnId: `${column._id}` })
+    const createdNewCard = await createNewCardAPI({
+      title: newCardTitle,
+      columnId: column._id,
+      boardId: board._id
+    })
+
+    //fix immutation in redux
+    //const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find(column => column._id === createdNewCard.columnId)
+    if (columnToUpdate) {
+      // Nếu column rỗng: bản chất là đang chứa một cái Placeholder card
+      if (columnToUpdate.cards.some(card => card.FE_Placeholder )) {
+        columnToUpdate.cards = [createdNewCard]
+        columnToUpdate.cardOrderIds = [createdNewCard._id]
+      } else {
+        // Ngược lại column đã có data thì push vào cuối mảng
+        columnToUpdate.cards.push(createdNewCard)
+        columnToUpdate.cardOrderIds.push(createdNewCard._id)
+      }
+    }
+    dispatch(updateCurrentActiveBoard(newBoard))
+
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }
@@ -77,7 +108,17 @@ const Column = ({ column, createNewCard, deleteDetailColumn }) => {
       // confirmationKeyword: 'thanhphatndev'
       buttonOrder: ['cancel', 'confirm']
     }).then(() => {
-      deleteDetailColumn(column._id)
+      //convert to redux
+      //deleteDetailColumn(column._id)
+      const orderColumn = board.columns.filter(c => c._id !== column._id)
+      const newBoard = { ...board }
+      newBoard.columns = orderColumn
+      newBoard.columnOrderIds = orderColumn.map(column => column._id)
+      // setBoard(newBoard)
+      dispatch(updateCurrentActiveBoard(newBoard))
+      deleteColumnDetailsAPI(column._id).then(res => {
+        toast.success(res?.deletedResult)
+      })
     })
       .catch(() => {})
   }
