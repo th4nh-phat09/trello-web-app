@@ -27,12 +27,9 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 const BoardContent = ({ board,
-  createNewColumn,
-  createNewCard,
   moveColumns,
   moveCardsInTheSameColumn,
-  moveCardsToDiffColumn,
-  deleteDetailColumn
+  moveCardsToDiffColumn
 }) => {
   // default is pointerSensor ,if use default you should use touch action none
   const mouseSensor = useSensor(MouseSensor, {
@@ -281,10 +278,7 @@ const BoardContent = ({ board,
         backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2')
       }}>
         {/* List Columns */}
-        <ListColumns columns={orderColumns}
-          createNewColumn={createNewColumn}
-          createNewCard={createNewCard}
-          deleteDetailColumn={deleteDetailColumn}/>
+        <ListColumns columns={orderColumns}/>
         <DragOverlay dropAnimation={customDropAnimation}>
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && <Column column={activeDragItemData} />}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD && <Card card={activeDragItemData} />}
