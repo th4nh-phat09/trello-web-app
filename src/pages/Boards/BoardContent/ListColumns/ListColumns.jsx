@@ -121,6 +121,7 @@ const ListColumns = ({ columns }) => {
                 variant="contained"
                 color="success"
                 size="small"
+                className='interceptor-loading'
                 onClick={ addNewColumn }
                 sx={{
                   boxShadow: 'none',

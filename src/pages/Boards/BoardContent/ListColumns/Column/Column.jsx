@@ -241,7 +241,12 @@ const Column = ({ column }) => {
               height: '100%'
             }}>
               {/* button add new card */}
-              <Button startIcon={<AddCardIcon />} onClick={toggleOpenNewCardForm}>Add new card</Button>
+              <Button
+                startIcon={<AddCardIcon/>}
+                onClick={toggleOpenNewCardForm}
+              >
+                Add new card
+              </Button>
               {/* Icon drag to move */}
               <Tooltip title='Drag to move'>
                 <DragHandleIcon sx={{ cursor: 'pointer' }} />
@@ -284,6 +289,7 @@ const Column = ({ column }) => {
                   color="success"
                   size="small"
                   onClick={ addNewCard }
+                  className='interceptor-loading'
                   sx={{
                     boxShadow: 'none',
                     border: '0.5px solid',
