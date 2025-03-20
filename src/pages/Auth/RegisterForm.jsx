@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
@@ -11,6 +11,8 @@ import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
 import { useForm } from 'react-hook-form'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
+import { registerUserAPI } from '~/apis/index'
+import { toast } from 'react-toastify'
 import {
   EMAIL_RULE_MESSAGE,
   PASSWORD_RULE,
@@ -20,15 +22,22 @@ import {
   PASSWORD_CONFIRMATION_MESSAGE
 } from '~/utils/validators'
 
+
 const RegisterForm = () => {
   const { register, handleSubmit, formState: { errors }, watch } = useForm({
     mode: 'onChange' // Kiểm tra lỗi ngay khi nhập
   })
+  let navigate = useNavigate()
 
   //chi chay vào đây khi submit ko có lỗi
-  const submitRegister = (/* data */) => {
+  const submitRegister = (data) => {
     //console.log('🚀 ~ submitLogIn ~ data:', data)
+    const { email, password } = data
+    toast.promise(registerUserAPI({ email, password }), { pending: 'registration is in progress' }).then(
+      user => navigate(`/login?registeredEmail=${user.email}`)
+    )
   }
+
 
   return (
     <form onSubmit={handleSubmit(submitRegister)}>

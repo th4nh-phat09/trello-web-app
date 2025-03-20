@@ -10,9 +10,7 @@ import {
   updateCardInDiffColumnAPI
 } from '~/apis'
 import { cloneDeep } from 'lodash'
-import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
+import PageLoadingSpinner from '~/components/PageLoadingSpinner/PageLoadingSpinner'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentActiveBoard, updateCurrentActiveBoard, fetchBoardDetailsAPI } from '~/redux/activeBoard/activeBoardSlice'
 
@@ -72,20 +70,7 @@ const Board = () => {
   }
 
   if (!board) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 2,
-          width: '100vw',
-          height: '100vh'
-        }}>
-        <CircularProgress />
-        <Typography>Loading Board ...</Typography>
-      </Box>
-    )
+    return <PageLoadingSpinner content="Loading Board..."/>
   }
 
   return (
