@@ -1,4 +1,5 @@
 import authorizedAxiosInstance from "~/utils/authorizeAxios";
+import { API_ROOT } from "~/utils/constant";
 import { toast } from "react-toastify";
 
 //move sang redux
@@ -6,9 +7,6 @@ import { toast } from "react-toastify";
 //   const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
 //   return response.data
 // }
-
-const API_ROOT = import.meta.env.VITE_API_ROOT || "http://localhost:8017";
-console.log("API_ROOT:", API_ROOT);
 
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await authorizedAxiosInstance.put(

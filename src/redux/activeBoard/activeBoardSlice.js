@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authorizedAxiosInstance from "~/utils/authorizeAxios";
+import { API_ROOT } from "~/utils/constant";
 import { mapOrder } from "~/utils/sort";
 import { isEmpty } from "lodash";
 import { generatePlaceholderCard } from "~/utils/formatters";
@@ -7,8 +8,6 @@ import { generatePlaceholderCard } from "~/utils/formatters";
 const initialState = {
   currentActiveBoard: null,
 };
-
-const API_ROOT = import.meta.env.VITE_API_ROOT;
 
 export const fetchBoardDetailsAPI = createAsyncThunk(
   "activeBoard/fetchBoardDetailsAPI",
