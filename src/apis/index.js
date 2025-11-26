@@ -7,7 +7,8 @@ import { toast } from "react-toastify";
 //   return response.data
 // }
 
-const API_ROOT = import.meta.env.VITE_API_ROOT;
+const API_ROOT = import.meta.env.VITE_API_ROOT || "http://localhost:8017";
+console.log("API_ROOT:", API_ROOT);
 
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await authorizedAxiosInstance.put(
