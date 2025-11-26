@@ -9,7 +9,6 @@ const initialState = {
 };
 
 const API_ROOT = import.meta.env.VITE_API_ROOT;
-const API_ROOT = import.meta.env.VITE_API_ROOT || "http://localhost:8017";
 
 export const fetchBoardDetailsAPI = createAsyncThunk(
   "activeBoard/fetchBoardDetailsAPI",
